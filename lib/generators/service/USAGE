@@ -1,0 +1,8 @@
+Description:
+    Creates a Service class
+
+Example:
+    rails generate service NAME
+
+    This will create:
+        services/NAME_service.rb
