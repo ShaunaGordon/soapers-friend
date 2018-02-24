@@ -1,24 +1,25 @@
-# README
+# Soaper's Friend
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Right now, this is a sample project to demonstrate my skills. Eventually, I hope this will become an actual, useful application.
 
-Things you may want to cover:
+## Application Goals
 
-* Ruby version
+The goal of this as an application is to provide a system for soap makers to record their recipes (with built in saponification calculators), track batches and inventory (both supplies and finished items), calculate cost of goods and wholesale/retail prices, and create text to export to a label maker. In short, it should be a central dashboard for professional soap makers.
 
-* System dependencies
+## Technical Information
 
-* Configuration
+* Language: Ruby 2.5
+* Framework: Rails
+* Virtualization: Docker with Kubernetes orchestration
 
-* Database creation
+## To Run Locally
 
-* Database initialization
+*Requirements*
 
-* How to run the test suite
+* Kubernetes
+* Minikube/kubectl
+* Docker
+* Hypervisor of choice (I use VirtualBox and KVM)
+* Secret file in parent folder of project, set up [per instructions here](https://www.engineyard.com/blog/kubernetes-tutorial-running-a-rails-app-in-kubernetes)
 
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Once those are set up, running `./start.sh` should set everything up and load the page your default browser. To tear everything down, run `./stop.sh`.
