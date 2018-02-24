@@ -22,4 +22,4 @@ The goal of this as an application is to provide a system for soap makers to rec
 * Hypervisor of choice (I use VirtualBox and KVM)
 * Secret file in parent folder of project, set up [per instructions here](https://www.engineyard.com/blog/kubernetes-tutorial-running-a-rails-app-in-kubernetes)
 
-Once those are set up, running `./start.sh` should set everything up and load the page your default browser. To tear everything down, run `./stop.sh`.
+Once those are set up, running `bin/start.sh` should set everything up and load the page your default browser. To tear everything down, run `bin/stop.sh`.
