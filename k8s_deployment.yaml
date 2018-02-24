@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: railsapp-deployment
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: railsapp
+    spec:
+      containers:
+      - name: railsapp
+        image: gordondev/soapers-friend-rails:latest
+        ports:
+        - containerPort: 3000
+        env:
+          - name: SECRET_KEY_BASE
+            valueFrom:
+              secretKeyRef:
+                name: railsapp-secrets
+                key: secret-key-base
