@@ -40,6 +40,7 @@ group :development, :test do
   gem 'capybara', '~> 2.13'
   gem 'selenium-webdriver'
   # Adds RSpec for testing
+  gem 'rspec'
   gem 'rspec-rails'
   # Adds FactoryBot (fka FactoryGirl)
   gem 'factory_bot'
