@@ -10,8 +10,8 @@ RSpec.describe SapcalcService, type: :service do
       # Return value for KOH (default)
       sap = 0.18
       weight = 100
-      calculator = SapcalcService.new()
-      result = calculator.calculate_oil(sap, weight)
+      calculator = SapcalcService.new
+      result = calculator.calculate_oil(sap_value: sap, weight: weight)
 
       expect(result).to eq(sap * weight)
     end
@@ -30,8 +30,8 @@ RSpec.describe SapcalcService, type: :service do
       sap = 0.18
       weight = 100
       modifier = 1.403
-      calculator = SapcalcService.new(SapcalcService::NAOH)
-      result = calculator.calculate_oil(sap, weight)
+      calculator = SapcalcService.new(lye_type: SapcalcService::NAOH)
+      result = calculator.calculate_oil(sap_value: sap, weight: weight)
 
       expect(result).to eq((sap/modifier) * weight)
     end
@@ -48,7 +48,7 @@ RSpec.describe SapcalcService, type: :service do
         }
       ]
       calculator = SapcalcService.new
-      result = calculator.calculate_oils(oils)
+      result = calculator.calculate_oils(oils: oils)
 
       expect(result).to eq((oils[0][:sap] * oils[0][:weight]) + (oils[1][:sap] * oils[1][:weight]))
     end
@@ -65,13 +65,13 @@ RSpec.describe SapcalcService, type: :service do
         }
       ]
       modifier = 1.403
-      calculator = SapcalcService.new(SapcalcService::NAOH)
-      result = calculator.calculate_oils(oils)
+      calculator = SapcalcService.new(lye_type: SapcalcService::NAOH)
+      result = calculator.calculate_oils(oils: oils)
 
       expect(result).to eq(((oils[0][:sap]/modifier) * oils[0][:weight]) + ((oils[1][:sap]/modifier) * oils[1][:weight]))
     end
 
-    it 'calculates lye reduction for single oil' do
+    it 'calculates non-zero lye reduction for oils' do
       # To make soap not strip *all* of the oils off one's skin,
       # a lye reduction (also known as super-fatting) is required.
       # In cold process, this results in some of the oils not being
@@ -82,6 +82,23 @@ RSpec.describe SapcalcService, type: :service do
       # of the soaper's choice to obtain the desired superfat.) Also, this
       # generally only applies to NaOH (bar) soaps, because you don't want
       # oils suspended in your liquid soap.
+      # Since this is set on a per-batch basis, based on a number of factors
+      # unique to the batch and the soap maker, we'll default to 0 and allow
+      # the value to be set on init.
+
+      nonreduced_lye = 10.5
+      reduction = 0.05 # 5% lye reduction, a common scenario
+      calculator = SapcalcService.new(lye_reduction: 0.05)
+
+      result = calculator.calculate_lye_reduction(nonreduced_lye: nonreduced_lye)
+
+      # Let's go back to math class, kids!
+      # Percentage formula:
+      # X is Y% of Z
+      # We set up the lye reduction as the decimal reduction (ie - 5% = 0.05).
+      # What we really want, though, is the remaining percentage (ie - 95%),
+      # so we need to invert the number (hence 1 - 0.05)
+      expect(result).to eq(nonreduced_lye * (1 - reduction))
     end
   end
 end
