@@ -30,5 +30,22 @@ RSpec.describe SapcalcService, type: :service do
 
       expect(result).to eq((sap/modifier) * weight)
     end
+
+    it 'calculates total KOH for multiple oils' do
+      oils = [
+        {
+          :sap => 0.18,
+          :weight => 100
+        },
+        {
+          :sap => 0.135,
+          :weight => 100
+        }
+      ]
+      calculator = SapcalcService.new
+      result = calculator.calculate_oils(oils)
+
+      expect(result).to eq((oils[0][:sap] * oils[0][:weight]) + (oils[1][:sap] * oils[1][:weight]))
+    end
   end
 end
