@@ -17,6 +17,11 @@ RSpec.describe SapcalcService, type: :service do
     end
 
     it 'calculates NaOH for a single oil' do
+      # Sodium hydroxide (NaOH) requires a different amount to saponify
+      # all of the oil. Therefore, we need to apply a modifier to account
+      # for that. Since it's consistent throughout the process, we can
+      # tell it which we need at the creation level.
+
       # Indicate NaOH (sodium hydroxide)
       # Take SAP value, Weight
       # Return appropriate value ((0.18/1.403) * 100)
@@ -25,7 +30,7 @@ RSpec.describe SapcalcService, type: :service do
       sap = 0.18
       weight = 100
       modifier = 1.403
-      calculator = SapcalcService.new('NaOH')
+      calculator = SapcalcService.new(SapcalcService::NAOH)
       result = calculator.calculate_oil(sap, weight)
 
       expect(result).to eq((sap/modifier) * weight)
@@ -60,10 +65,23 @@ RSpec.describe SapcalcService, type: :service do
         }
       ]
       modifier = 1.403
-      calculator = SapcalcService.new('NaOH')
+      calculator = SapcalcService.new(SapcalcService::NAOH)
       result = calculator.calculate_oils(oils)
 
       expect(result).to eq(((oils[0][:sap]/modifier) * oils[0][:weight]) + ((oils[1][:sap]/modifier) * oils[1][:weight]))
+    end
+
+    it 'calculates lye reduction for single oil' do
+      # To make soap not strip *all* of the oils off one's skin,
+      # a lye reduction (also known as super-fatting) is required.
+      # In cold process, this results in some of the oils not being
+      # saponified into soap. Unfortunately, we have no control over
+      # which ones, and we can only reduce the amount of lye we use in
+      # the batch and let the chemical process "determine" what fatty acids
+      # are not turned to soap. (Hot process can add a certain amount of oil
+      # of the soaper's choice to obtain the desired superfat.) Also, this
+      # generally only applies to NaOH (bar) soaps, because you don't want
+      # oils suspended in your liquid soap.
     end
   end
 end
