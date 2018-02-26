@@ -12,7 +12,13 @@ class SapcalcService
   end
 
   def calculate_oils(oils:)
-    return oils.map{|oil| self.calculate_oil(sap_value: oil[:sap], weight: oil[:weight])}.reduce(0, :+)
+    return oils
+          .map{|oil| self.calculate_oil(
+                      sap_value: oil[:sap],
+                      weight: oil[:weight]
+                     )
+          }
+          .reduce(0, :+)
   end
 
   def calculate_lye_reduction(nonreduced_lye:)

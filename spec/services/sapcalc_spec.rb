@@ -88,7 +88,23 @@ RSpec.describe SapcalcService, type: :service do
 
       nonreduced_lye = 10.5
       reduction = 0.05 # 5% lye reduction, a common scenario
-      calculator = SapcalcService.new(lye_reduction: 0.05)
+      calculator = SapcalcService.new(lye_reduction: reduction)
+
+      result = calculator.calculate_lye_reduction(nonreduced_lye: nonreduced_lye)
+
+      # Let's go back to math class, kids!
+      # Percentage formula:
+      # X is Y% of Z
+      # We set up the lye reduction as the decimal reduction (ie - 5% = 0.05).
+      # What we really want, though, is the remaining percentage (ie - 95%),
+      # so we need to invert the number (hence 1 - 0.05)
+      expect(result).to eq(nonreduced_lye * (1 - reduction))
+    end
+
+    it 'correctly calculates zero lye reduction' do
+      nonreduced_lye = 10.5
+      reduction = 0.0 # zero reduction
+      calculator = SapcalcService.new(lye_reduction: reduction)
 
       result = calculator.calculate_lye_reduction(nonreduced_lye: nonreduced_lye)
 
