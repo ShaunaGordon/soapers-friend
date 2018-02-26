@@ -47,5 +47,23 @@ RSpec.describe SapcalcService, type: :service do
 
       expect(result).to eq((oils[0][:sap] * oils[0][:weight]) + (oils[1][:sap] * oils[1][:weight]))
     end
+
+    it 'calculates total NaOH for multiple oils' do
+      oils = [
+        {
+          :sap => 0.18,
+          :weight => 100
+        },
+        {
+          :sap => 0.135,
+          :weight => 100
+        }
+      ]
+      modifier = 1.403
+      calculator = SapcalcService.new('NaOH')
+      result = calculator.calculate_oils(oils)
+
+      expect(result).to eq(((oils[0][:sap]/modifier) * oils[0][:weight]) + ((oils[1][:sap]/modifier) * oils[1][:weight]))
+    end
   end
 end
