@@ -1,10 +1,10 @@
 require 'rails_helper'
 
+# The SAP value of oils is the ratio of KOH (Potassium Hydroxide)
+# to oil needed to saponify (turn to soap) the entire amount of oil
+# So, 100g of oil with a SAP value of 0.18 requires 18g of KOH
 RSpec.describe SapcalcService, type: :service do
-  # The SAP value of oils is the ratio of KOH (Potassium Hydroxide)
-  # to oil needed to saponify (turn to soap) the entire amount of oil
-  # So, 100g of oil with a SAP value of 0.18 requires 18g of KOH
-  describe '#calculate' do
+  describe '#calculate_oil' do
     it 'calculates KOH for a single oil' do
       # Take SAP value, Weight
       # Return value for KOH (default)
@@ -35,8 +35,12 @@ RSpec.describe SapcalcService, type: :service do
 
       expect(result).to eq((sap/modifier) * weight)
     end
+  end
 
+  describe '#calculate_oils' do
     it 'calculates total KOH for multiple oils' do
+      # Most soaps consist of multiple oils, and each has its own SAP value.
+      # Therefore, we need to be able to calculate them all, quickly and easily.
       oils = [
         {
           :sap => 0.18,
@@ -70,7 +74,9 @@ RSpec.describe SapcalcService, type: :service do
 
       expect(result).to eq(((oils[0][:sap]/modifier) * oils[0][:weight]) + ((oils[1][:sap]/modifier) * oils[1][:weight]))
     end
+  end
 
+  describe '#calculate_lye_reduction' do
     it 'calculates non-zero lye reduction for oils' do
       # To make soap not strip *all* of the oils off one's skin,
       # a lye reduction (also known as super-fatting) is required.
@@ -103,8 +109,8 @@ RSpec.describe SapcalcService, type: :service do
 
     it 'correctly calculates zero lye reduction' do
       nonreduced_lye = 10.5
-      reduction = 0.0 # zero reduction
-      calculator = SapcalcService.new(lye_reduction: reduction)
+      # zero's the default
+      calculator = SapcalcService.new
 
       result = calculator.calculate_lye_reduction(nonreduced_lye: nonreduced_lye)
 
