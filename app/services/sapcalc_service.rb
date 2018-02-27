@@ -3,6 +3,15 @@ class SapcalcService
   NAOH = 1.403
 
   def initialize(lye_type: KOH, lye_reduction: 0.0)
+    # lye_reduction = lye_reduction.to_f
+    unless lye_type == KOH || lye_type == NAOH
+      raise ArgumentError.new('Lye type must be either SapcalcService::NAOH or SapcalcService::KOH')
+    end
+
+    unless Float(lye_reduction)
+      raise ArgumentError.new('Lye reduction must be a number')
+    end
+
     @lye_type_modifier = lye_type
     @lye_reduction = lye_reduction
   end
@@ -22,6 +31,9 @@ class SapcalcService
   end
 
   def calculate_lye_reduction(nonreduced_lye:)
+    unless Float(nonreduced_lye)
+      raise ArgumentError.new('Lye reduction must be a number')
+    end
     # Let's go back to math class, kids!
     # Percentage formula:
     # X is Y% of Z

@@ -77,7 +77,7 @@ RSpec.describe SapcalcService, type: :service do
     end
   end
 
-  describe '#calculate_lye_reduction' do
+  context 'is calculating lye reduction' do
     it 'calculates non-zero lye reduction for oils' do
       # To make soap not strip *all* of the oils off one's skin,
       # a lye reduction (also known as super-fatting) is required.
@@ -118,5 +118,52 @@ RSpec.describe SapcalcService, type: :service do
       # No reduction should result in our original value
       expect(result).to eq(nonreduced_lye)
     end
+
+    subject(:calculator) { SapcalcService.new }
+    context 'is invalid nonreduced lye value' do
+      it 'throws invalid type error' do
+        expect { calculator.calculate_lye_reduction(nonreduced_lye: 'foo') }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'is valid string lye value' do
+      it 'accepts float numeric string' do
+        expect { calculator.calculate_lye_reduction(nonreduced_lye: '10.5') }.to_not raise_error
+      end
+
+      it 'accepts integer numeric string' do
+        expect { calculator.calculate_lye_reduction(nonreduced_lye: '10') }.to_not raise_error
+      end
+    end
+  end
+
+  context 'is invalid input' do
+    context 'is invalid lye type' do
+      it 'throws invalid type error' do
+        # There are only two types of Lye used in soap making, KOH and NaOH
+        # Anything else is an error
+        expect { SapcalcService.new(lye_type: 'foo') }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'is invalid lye reduction value' do
+      it 'throws invalid type error' do
+        # There are only two types of Lye used in soap making, KOH and NaOH
+        # Anything else is an error
+        expect { SapcalcService.new(lye_reduction: 'foo') }.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  it 'accepts float numeric string' do
+    expect { SapcalcService.new(lye_reduction: '1.1') }.to_not raise_error
+  end
+
+  it 'accepts integer numeric string' do
+    expect { SapcalcService.new(lye_reduction: '1') }.to_not raise_error
+  end
+
+  it 'accepts integer' do
+    expect { SapcalcService.new(lye_reduction: 1) }.to_not raise_error
   end
 end
