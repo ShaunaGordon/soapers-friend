@@ -4,17 +4,40 @@ require 'rails_helper'
 # to oil needed to saponify (turn to soap) the entire amount of oil
 # So, 100g of oil with a SAP value of 0.18 requires 18g of KOH
 RSpec.describe SapcalcService, type: :service do
-  describe '#calculate_oil' do
+  context 'is calculating KOH' do
+    subject(:calculator) { SapcalcService.new }
+
     it 'calculates KOH for a single oil' do
       # Take SAP value, Weight
       # Return value for KOH (default)
       sap = 0.18
       weight = 100
-      calculator = SapcalcService.new
       result = calculator.calculate_oil(sap_value: sap, weight: weight)
 
       expect(result).to eq(sap * weight)
     end
+
+    it 'calculates total KOH for multiple oils' do
+      # Most soaps consist of multiple oils, and each has its own SAP value.
+      # Therefore, we need to be able to calculate them all, quickly and easily.
+      oils = [
+        {
+          :sap => 0.18,
+          :weight => 100
+        },
+        {
+          :sap => 0.135,
+          :weight => 100
+        }
+      ]
+      result = calculator.calculate_oils(oils: oils)
+
+      expect(result).to eq((oils[0][:sap] * oils[0][:weight]) + (oils[1][:sap] * oils[1][:weight]))
+    end
+  end
+
+  context 'is calculating NaOH' do
+    subject(:calculator) { SapcalcService.new(lye_type: SapcalcService::NAOH) }
 
     it 'calculates NaOH for a single oil' do
       # Sodium hydroxide (NaOH) requires a different amount to saponify
@@ -30,31 +53,9 @@ RSpec.describe SapcalcService, type: :service do
       sap = 0.18
       weight = 100
       modifier = 1.403
-      calculator = SapcalcService.new(lye_type: SapcalcService::NAOH)
       result = calculator.calculate_oil(sap_value: sap, weight: weight)
 
       expect(result).to eq((sap/modifier) * weight)
-    end
-  end
-
-  describe '#calculate_oils' do
-    it 'calculates total KOH for multiple oils' do
-      # Most soaps consist of multiple oils, and each has its own SAP value.
-      # Therefore, we need to be able to calculate them all, quickly and easily.
-      oils = [
-        {
-          :sap => 0.18,
-          :weight => 100
-        },
-        {
-          :sap => 0.135,
-          :weight => 100
-        }
-      ]
-      calculator = SapcalcService.new
-      result = calculator.calculate_oils(oils: oils)
-
-      expect(result).to eq((oils[0][:sap] * oils[0][:weight]) + (oils[1][:sap] * oils[1][:weight]))
     end
 
     it 'calculates total NaOH for multiple oils' do

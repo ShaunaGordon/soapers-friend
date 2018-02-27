@@ -44,6 +44,8 @@ group :development, :test do
   gem 'rspec-rails'
   # Adds FactoryBot (fka FactoryGirl)
   gem 'factory_bot'
+  # Add a formatter to testing output
+  gem 'fuubar'
 end
 
 group :development do
